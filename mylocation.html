@@ -3,41 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Location</title>
+    <title>Location Button</title>
     <style>
+        /* Button styling */
         #customLocationBtn {
-            background-color: #007ac2;
-            color: white;
-            padding: 10px 15px;
+            width: 50px;
+            height: 50px;
+            background-color: #6b7355; /* Adjust color */
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 10px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        /* Icon inside the button */
+        #customLocationBtn img {
+            width: 24px; /* Adjust size */
+            height: 24px;
+        }
+
+        /* Hover effect */
         #customLocationBtn:hover {
-            background-color: #005a8e;
+            background-color: #5a6149;
         }
     </style>
 </head>
 <body>
-    <button id="customLocationBtn">Find My Location</button>
+
+    <!-- Custom Location Button -->
+    <button id="customLocationBtn">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Location_dot_black.svg" alt="Locate">
+    </button>
 
     <script>
     document.getElementById("customLocationBtn").addEventListener("click", function() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                let latitude = position.coords.latitude;
-                let longitude = position.coords.longitude;
+            // Request user permission
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    let latitude = position.coords.latitude;
+                    let longitude = position.coords.longitude;
 
-                // Send location data to the parent ArcGIS Experience Builder map
-                window.parent.postMessage({ lat: latitude, lon: longitude }, "*");
-            }, () => {
-                alert("Unable to retrieve location.");
-            });
+                    // Send location data to ArcGIS Experience Builder
+                    window.parent.postMessage({ lat: latitude, lon: longitude }, "*");
+                },
+                (error) => {
+                    if (error.code === error.PERMISSION_DENIED) {
+                        alert("Location permission denied. Please enable it in your browser settings.");
+                    } else {
+                        alert("Unable to retrieve location.");
+                    }
+                }
+            );
         } else {
             alert("Geolocation is not supported by this browser.");
         }
     });
+
     </script>
+
 </body>
 </html>
