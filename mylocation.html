@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Location</title>
+    <style>
+        #customLocationBtn {
+            background-color: #007ac2;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #customLocationBtn:hover {
+            background-color: #005a8e;
+        }
+    </style>
+</head>
+<body>
+    <button id="customLocationBtn">Find My Location</button>
+
+    <script>
+    document.getElementById("customLocationBtn").addEventListener("click", function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+
+                // Send location data to the parent ArcGIS Experience Builder map
+                window.parent.postMessage({ lat: latitude, lon: longitude }, "*");
+            }, () => {
+                alert("Unable to retrieve location.");
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    });
+    </script>
+</body>
+</html>
